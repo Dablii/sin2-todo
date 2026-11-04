@@ -26,22 +26,22 @@ const COLUMNS: ColumnConfig[] = [
     id: 'TODO',
     title: 'To Do',
     icon: Circle,
-    headerColor: 'text-slate-700',
-    badgeColor: 'bg-slate-200 text-slate-700'
+    headerColor: 'text-[#D3D9D4]',
+    badgeColor: 'bg-[#212A31] text-[#748D92] border border-[#748D92]/30'
   },
   {
     id: 'IN_PROGRESS',
     title: 'In Progress',
     icon: Clock3,
-    headerColor: 'text-indigo-700',
-    badgeColor: 'bg-indigo-100 text-indigo-800'
+    headerColor: 'text-sky-300',
+    badgeColor: 'bg-sky-950/60 text-sky-300 border border-sky-800/40'
   },
   {
     id: 'DONE',
     title: 'Done',
     icon: CheckCircle2,
-    headerColor: 'text-emerald-700',
-    badgeColor: 'bg-emerald-100 text-emerald-800'
+    headerColor: 'text-emerald-300',
+    badgeColor: 'bg-emerald-950/60 text-emerald-300 border border-emerald-800/40'
   }
 ];
 
@@ -100,10 +100,10 @@ export function KanbanBoard({
   return (
     <div className="space-y-6">
       {/* Filters bar */}
-      <div className="bg-white p-3.5 rounded-2xl border border-slate-200/80 shadow-xs flex flex-wrap items-center justify-between gap-4">
+      <div className="bg-[#2E3944] p-3.5 rounded-2xl border border-[#748D92]/30 shadow-sm flex flex-wrap items-center justify-between gap-4">
         <div className="flex flex-wrap items-center gap-3">
-          <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-400">
-            <Filter className="w-3.5 h-3.5" />
+          <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#748D92]">
+            <Filter className="w-3.5 h-3.5 text-[#124E66]" />
             Filtry:
           </div>
 
@@ -111,11 +111,11 @@ export function KanbanBoard({
           <select
             value={selectedSection}
             onChange={(e) => setSelectedSection(e.target.value)}
-            className="text-xs font-semibold px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="text-xs font-semibold px-3 py-1.5 bg-[#212A31] border border-[#748D92]/30 rounded-lg text-[#D3D9D4] focus:outline-none focus:border-[#124E66]"
           >
             <option value="ALL">Všechny sekce</option>
             {sections.map((s) => (
-              <option key={s.id} value={s.id}>
+              <option key={s.id} value={s.id} className="bg-[#2E3944] text-[#D3D9D4]">
                 Sekce: {s.title}
               </option>
             ))}
@@ -125,11 +125,11 @@ export function KanbanBoard({
           <select
             value={selectedAssignee}
             onChange={(e) => setSelectedAssignee(e.target.value)}
-            className="text-xs font-semibold px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="text-xs font-semibold px-3 py-1.5 bg-[#212A31] border border-[#748D92]/30 rounded-lg text-[#D3D9D4] focus:outline-none focus:border-[#124E66]"
           >
             <option value="ALL">Všichni členové</option>
             {members.map((m) => (
-              <option key={m.uid} value={m.uid}>
+              <option key={m.uid} value={m.uid} className="bg-[#2E3944] text-[#D3D9D4]">
                 Přiřazeno: {m.displayName || m.email}
               </option>
             ))}
@@ -141,14 +141,14 @@ export function KanbanBoard({
                 setSelectedSection('ALL');
                 setSelectedAssignee('ALL');
               }}
-              className="text-xs text-indigo-600 hover:underline font-semibold"
+              className="text-xs text-[#D3D9D4] hover:underline font-semibold"
             >
               Reset filtrů
             </button>
           )}
         </div>
 
-        <div className="text-xs text-slate-500 font-medium">
+        <div className="text-xs text-[#748D92] font-medium">
           Zobrazeno {filteredTasks.length} z {tasks.length} úkolů
         </div>
       </div>
@@ -166,14 +166,14 @@ export function KanbanBoard({
               onDragOver={(e) => handleDragOver(e, col.id)}
               onDragLeave={handleDragLeave}
               onDrop={(e) => handleDrop(e, col.id)}
-              className={`flex flex-col rounded-2xl bg-slate-100/70 p-4 border transition-all min-h-[500px] ${
+              className={`flex flex-col rounded-2xl bg-[#2E3944]/70 p-4 border transition-all min-h-[500px] ${
                 isDropActive
-                  ? 'border-indigo-400 bg-indigo-50/50 ring-2 ring-indigo-300'
-                  : 'border-slate-200/80'
+                  ? 'border-[#124E66] bg-[#2E3944] ring-2 ring-[#124E66]'
+                  : 'border-[#748D92]/30'
               }`}
             >
               {/* Column header */}
-              <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-200/70">
+              <div className="flex items-center justify-between pb-3 mb-3 border-b border-[#748D92]/20">
                 <div className="flex items-center gap-2">
                   <Icon className={`w-4 h-4 ${col.headerColor}`} />
                   <h3 className={`font-bold text-sm ${col.headerColor}`}>
@@ -189,7 +189,7 @@ export function KanbanBoard({
                 <button
                   onClick={() => onOpenTaskModal(null, col.id)}
                   title={`Přidat úkol do ${col.title}`}
-                  className="p-1 text-slate-400 hover:text-indigo-600 hover:bg-white rounded-lg transition"
+                  className="p-1 text-[#748D92] hover:text-[#D3D9D4] hover:bg-[#212A31] rounded-lg transition"
                 >
                   <Plus className="w-4 h-4" />
                 </button>
@@ -200,7 +200,7 @@ export function KanbanBoard({
                 {colTasks.length === 0 ? (
                   <div
                     onClick={() => onOpenTaskModal(null, col.id)}
-                    className="border-2 border-dashed border-slate-200 rounded-xl p-6 text-center text-xs text-slate-400 hover:border-indigo-300 hover:text-indigo-600 transition cursor-pointer"
+                    className="border-2 border-dashed border-[#748D92]/30 rounded-xl p-6 text-center text-xs text-[#748D92] hover:border-[#124E66] hover:text-[#D3D9D4] transition cursor-pointer"
                   >
                     + Kliknutím přidejte úkol
                   </div>

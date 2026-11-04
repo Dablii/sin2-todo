@@ -107,8 +107,8 @@ function ProjectContent() {
 
   if (authLoading || loading || !project) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
-        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600" />
+      <div className="min-h-screen flex items-center justify-center bg-[#212A31]">
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#124E66]" />
       </div>
     );
   }
@@ -117,7 +117,7 @@ function ProjectContent() {
   const projectMembers = allUsers.filter((u) => project.memberIds?.includes(u.uid));
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50">
+    <div className="min-h-screen flex flex-col bg-[#212A31] text-[#D3D9D4]">
       <Navbar />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -125,7 +125,7 @@ function ProjectContent() {
         <div className="mb-6">
           <Link
             href="/"
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-indigo-600 transition mb-3"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#748D92] hover:text-[#D3D9D4] transition mb-3"
           >
             <ChevronLeft className="w-4 h-4" />
             Zpět na přehled projektů
@@ -134,18 +134,18 @@ function ProjectContent() {
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
             <div>
               <div className="flex items-center gap-3">
-                <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+                <h1 className="text-2xl sm:text-3xl font-extrabold text-[#D3D9D4] tracking-tight">
                   {project.title}
                 </h1>
                 {project.ownerId === user?.uid && (
-                  <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200">
-                    <Crown className="w-3 h-3 text-amber-600" />
+                  <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-[#124E66]/40 text-[#D3D9D4] border border-[#124E66]">
+                    <Crown className="w-3 h-3 text-amber-400" />
                     Vlastník
                   </span>
                 )}
               </div>
               {project.description && (
-                <p className="mt-1 text-sm text-slate-600 max-w-2xl">
+                <p className="mt-1 text-sm text-[#748D92] max-w-2xl">
                   {project.description}
                 </p>
               )}
@@ -155,43 +155,43 @@ function ProjectContent() {
             <div className="flex items-center gap-2.5 flex-wrap">
               <button
                 onClick={() => setMembersModalOpen(true)}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-white border border-slate-200 rounded-xl text-slate-700 hover:bg-slate-50 font-semibold text-xs shadow-2xs transition"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-[#2E3944] border border-[#748D92]/30 rounded-xl text-[#D3D9D4] hover:bg-[#2E3944]/80 font-semibold text-xs shadow-sm transition"
               >
-                <Users className="w-4 h-4 text-indigo-600" />
+                <Users className="w-4 h-4 text-[#124E66]" />
                 <span>Členové ({project.memberIds?.length || 1})</span>
               </button>
 
               <button
                 onClick={() => setSectionModalOpen(true)}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-white border border-slate-200 rounded-xl text-slate-700 hover:bg-slate-50 font-semibold text-xs shadow-2xs transition"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-[#2E3944] border border-[#748D92]/30 rounded-xl text-[#D3D9D4] hover:bg-[#2E3944]/80 font-semibold text-xs shadow-sm transition"
               >
-                <Layers className="w-4 h-4 text-indigo-600" />
+                <Layers className="w-4 h-4 text-[#124E66]" />
                 <span>Sekce ({sections.length})</span>
               </button>
 
               <button
                 onClick={() => handleOpenTaskModal(null, 'TODO')}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold text-xs shadow-sm shadow-indigo-200 transition"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-[#124E66] hover:bg-[#124E66]/80 text-[#D3D9D4] rounded-xl font-semibold text-xs shadow-md border border-[#748D92]/30 transition"
               >
                 <Plus className="w-4 h-4" />
-                Přidat úkol
+                <span>Přidat úkol</span>
               </button>
             </div>
           </div>
         </div>
 
         {/* View Switcher: [Kanban] vs [Časová osa] */}
-        <div className="border-b border-slate-200 mb-6 flex items-center justify-between">
-          <div className="flex items-center gap-1">
+        <div className="border-b border-[#748D92]/20 mb-6 flex items-center justify-between">
+          <div className="flex items-center gap-2">
             <button
               onClick={() => setActiveView('kanban')}
               className={`flex items-center gap-2 px-4 py-2.5 border-b-2 font-bold text-sm transition cursor-pointer ${
                 activeView === 'kanban'
-                  ? 'border-indigo-600 text-indigo-600'
-                  : 'border-transparent text-slate-500 hover:text-slate-800'
+                  ? 'border-[#124E66] text-[#D3D9D4] bg-[#2E3944]/40 rounded-t-lg'
+                  : 'border-transparent text-[#748D92] hover:text-[#D3D9D4]'
               }`}
             >
-              <LayoutDashboard className="w-4 h-4" />
+              <LayoutDashboard className="w-4 h-4 text-[#124E66]" />
               Kanban board
             </button>
 
@@ -199,11 +199,11 @@ function ProjectContent() {
               onClick={() => setActiveView('timeline')}
               className={`flex items-center gap-2 px-4 py-2.5 border-b-2 font-bold text-sm transition cursor-pointer ${
                 activeView === 'timeline'
-                  ? 'border-indigo-600 text-indigo-600'
-                  : 'border-transparent text-slate-500 hover:text-slate-800'
+                  ? 'border-[#124E66] text-[#D3D9D4] bg-[#2E3944]/40 rounded-t-lg'
+                  : 'border-transparent text-[#748D92] hover:text-[#D3D9D4]'
               }`}
             >
-              <Clock className="w-4 h-4" />
+              <Clock className="w-4 h-4 text-[#124E66]" />
               Časová osa (Timeline)
             </button>
           </div>
@@ -259,8 +259,8 @@ export default function ProjectDetailPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen flex items-center justify-center bg-slate-50">
-          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600" />
+        <div className="min-h-screen flex items-center justify-center bg-[#212A31]">
+          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#124E66]" />
         </div>
       }
     >

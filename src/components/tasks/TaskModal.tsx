@@ -71,7 +71,7 @@ export function TaskModal({
       setSubtasks([]);
     }
     setError('');
-  }, [task, defaultStatus, sections, members, isOpen]);
+  }, [task, defaultStatus, isOpen, sections, members]);
 
   if (!isOpen) return null;
 
@@ -79,7 +79,7 @@ export function TaskModal({
     e.preventDefault();
     if (!newSubtaskTitle.trim()) return;
     const newSub: Subtask = {
-      id: 'sub-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4),
+      id: `sub-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
       title: newSubtaskTitle.trim(),
       isCompleted: false
     };
@@ -87,18 +87,21 @@ export function TaskModal({
     setNewSubtaskTitle('');
   };
 
-  const toggleSubtask = (subId: string) => {
+  const toggleSubtask = (id: string) => {
     setSubtasks(
-      subtasks.map((s) => (s.id === subId ? { ...s, isCompleted: !s.isCompleted } : s))
+      subtasks.map((s) =>
+        s.id === id ? { ...s, isCompleted: !s.isCompleted } : s
+      )
     );
   };
 
-  const removeSubtask = (subId: string) => {
-    setSubtasks(subtasks.filter((s) => s.id !== subId));
+  const removeSubtask = (id: string) => {
+    setSubtasks(subtasks.filter((s) => s.id !== id));
   };
 
   const completedCount = subtasks.filter((s) => s.isCompleted).length;
-  const progressPct = subtasks.length > 0 ? Math.round((completedCount / subtasks.length) * 100) : 0;
+  const progressPct =
+    subtasks.length > 0 ? Math.round((completedCount / subtasks.length) * 100) : 0;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -110,8 +113,7 @@ export function TaskModal({
     setLoading(true);
     setError('');
 
-    const selectedMember = members.find((m) => m.uid === assigneeId);
-    const assigneeName = selectedMember ? selectedMember.displayName || selectedMember.email : '';
+    const assignee = members.find((m) => m.uid === assigneeId);
 
     try {
       if (isEditing && task) {
@@ -120,31 +122,31 @@ export function TaskModal({
           description: description.trim(),
           status,
           priority,
-          sectionId,
-          deadline,
-          assigneeId,
-          assigneeName,
+          sectionId: sectionId || undefined,
+          deadline: deadline || undefined,
+          assigneeId: assigneeId || undefined,
+          assigneeName: assignee ? (assignee.displayName || assignee.email) : undefined,
           subtasks
         });
       } else {
         await createTask({
           projectId,
-          sectionId,
           title: title.trim(),
           description: description.trim(),
           status,
           priority,
-          deadline,
-          assigneeId,
-          assigneeName,
+          sectionId: sectionId || undefined,
+          deadline: deadline || undefined,
+          assigneeId: assigneeId || undefined,
+          assigneeName: assignee ? (assignee.displayName || assignee.email) : undefined,
           subtasks,
-          order: Date.now()
+          order: 0
         });
       }
       onClose();
     } catch (err: any) {
       console.error(err);
-      setError('Chyba při ukládání úkolu.');
+      setError('Nepodařilo se uložit úkol.');
     } finally {
       setLoading(false);
     }
@@ -165,25 +167,25 @@ export function TaskModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs overflow-y-auto">
-      <div className="bg-white rounded-2xl max-w-2xl w-full shadow-2xl border border-slate-100 overflow-hidden my-8 animate-in fade-in zoom-in-95 duration-150">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm overflow-y-auto">
+      <div className="bg-[#2E3944] rounded-2xl max-w-2xl w-full shadow-2xl border border-[#748D92]/40 overflow-hidden my-8 animate-in fade-in zoom-in-95 duration-150">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+        <div className="px-6 py-4 border-b border-[#748D92]/20 flex items-center justify-between bg-[#212A31]/50">
           <div className="flex items-center gap-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-full">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#D3D9D4] bg-[#124E66] px-2.5 py-1 rounded-full border border-[#748D92]/30">
               {isEditing ? 'Detail úkolu' : 'Nový úkol'}
             </span>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition"
+            className="p-1.5 text-[#748D92] hover:text-[#D3D9D4] hover:bg-[#212A31] rounded-lg transition"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {error && (
-          <div className="mx-6 mt-4 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-sm">
+          <div className="mx-6 mt-4 p-3 rounded-xl bg-rose-950/60 border border-rose-800 text-rose-300 text-xs">
             {error}
           </div>
         )}
@@ -191,8 +193,8 @@ export function TaskModal({
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
           {/* Title */}
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">
-              Název úkolu <span className="text-rose-500">*</span>
+            <label className="block text-xs font-bold uppercase tracking-wider text-[#748D92] mb-1.5">
+              Název úkolu <span className="text-rose-400">*</span>
             </label>
             <input
               type="text"
@@ -200,60 +202,60 @@ export function TaskModal({
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Co je potřeba udělat?"
-              className="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 font-semibold focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 text-base transition"
+              className="w-full px-4 py-2.5 bg-[#212A31] border border-[#748D92]/40 rounded-xl text-[#D3D9D4] font-semibold focus:outline-none focus:border-[#124E66] text-base transition"
             />
           </div>
 
           {/* Grid attributes: Stav, Priorita, Sekce, Odpovědná osoba, Deadline */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50/70 p-4 rounded-xl border border-slate-200/80">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-[#212A31]/60 p-4 rounded-xl border border-[#748D92]/20">
             {/* Stav */}
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1 flex items-center gap-1.5">
-                <CheckCircle2 className="w-3.5 h-3.5 text-slate-400" />
+              <label className="block text-xs font-bold uppercase tracking-wider text-[#748D92] mb-1 flex items-center gap-1.5">
+                <CheckCircle2 className="w-3.5 h-3.5 text-[#124E66]" />
                 Stav
               </label>
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value as TaskStatus)}
-                className="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-3 py-2 bg-[#212A31] border border-[#748D92]/30 rounded-lg text-[#D3D9D4] text-xs focus:outline-none focus:border-[#124E66]"
               >
-                <option value="TODO">To Do</option>
-                <option value="IN_PROGRESS">In Progress</option>
-                <option value="DONE">Done</option>
+                <option value="TODO" className="bg-[#2E3944] text-[#D3D9D4]">To Do</option>
+                <option value="IN_PROGRESS" className="bg-[#2E3944] text-[#D3D9D4]">In Progress</option>
+                <option value="DONE" className="bg-[#2E3944] text-[#D3D9D4]">Done</option>
               </select>
             </div>
 
             {/* Priorita */}
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1 flex items-center gap-1.5">
-                <Flag className="w-3.5 h-3.5 text-slate-400" />
+              <label className="block text-xs font-bold uppercase tracking-wider text-[#748D92] mb-1 flex items-center gap-1.5">
+                <Flag className="w-3.5 h-3.5 text-[#124E66]" />
                 Priorita
               </label>
               <select
                 value={priority}
                 onChange={(e) => setPriority(e.target.value as Priority)}
-                className="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-3 py-2 bg-[#212A31] border border-[#748D92]/30 rounded-lg text-[#D3D9D4] text-xs focus:outline-none focus:border-[#124E66]"
               >
-                <option value="LOW">Nízká</option>
-                <option value="MEDIUM">Střední</option>
-                <option value="HIGH">Vysoká</option>
+                <option value="LOW" className="bg-[#2E3944] text-[#D3D9D4]">Nízká</option>
+                <option value="MEDIUM" className="bg-[#2E3944] text-[#D3D9D4]">Střední</option>
+                <option value="HIGH" className="bg-[#2E3944] text-[#D3D9D4]">Vysoká</option>
               </select>
             </div>
 
             {/* Sekce */}
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1 flex items-center gap-1.5">
-                <Layers className="w-3.5 h-3.5 text-slate-400" />
+              <label className="block text-xs font-bold uppercase tracking-wider text-[#748D92] mb-1 flex items-center gap-1.5">
+                <Layers className="w-3.5 h-3.5 text-[#124E66]" />
                 Sekce projektu
               </label>
               <select
                 value={sectionId}
                 onChange={(e) => setSectionId(e.target.value)}
-                className="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-3 py-2 bg-[#212A31] border border-[#748D92]/30 rounded-lg text-[#D3D9D4] text-xs focus:outline-none focus:border-[#124E66]"
               >
-                <option value="">Bez sekce</option>
+                <option value="" className="bg-[#2E3944] text-[#D3D9D4]">Bez sekce</option>
                 {sections.map((s) => (
-                  <option key={s.id} value={s.id}>
+                  <option key={s.id} value={s.id} className="bg-[#2E3944] text-[#D3D9D4]">
                     {s.title}
                   </option>
                 ))}
@@ -262,18 +264,18 @@ export function TaskModal({
 
             {/* Odpovědná osoba */}
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1 flex items-center gap-1.5">
-                <User className="w-3.5 h-3.5 text-slate-400" />
+              <label className="block text-xs font-bold uppercase tracking-wider text-[#748D92] mb-1 flex items-center gap-1.5">
+                <User className="w-3.5 h-3.5 text-[#124E66]" />
                 Odpovědná osoba
               </label>
               <select
                 value={assigneeId}
                 onChange={(e) => setAssigneeId(e.target.value)}
-                className="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-3 py-2 bg-[#212A31] border border-[#748D92]/30 rounded-lg text-[#D3D9D4] text-xs focus:outline-none focus:border-[#124E66]"
               >
-                <option value="">Nepřiřazeno</option>
+                <option value="" className="bg-[#2E3944] text-[#D3D9D4]">Nepřiřazeno</option>
                 {members.map((m) => (
-                  <option key={m.uid} value={m.uid}>
+                  <option key={m.uid} value={m.uid} className="bg-[#2E3944] text-[#D3D9D4]">
                     {m.displayName || m.email}
                   </option>
                 ))}
@@ -282,23 +284,23 @@ export function TaskModal({
 
             {/* Deadline */}
             <div className="sm:col-span-2">
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1 flex items-center gap-1.5">
-                <Calendar className="w-3.5 h-3.5 text-slate-400" />
+              <label className="block text-xs font-bold uppercase tracking-wider text-[#748D92] mb-1 flex items-center gap-1.5">
+                <Calendar className="w-3.5 h-3.5 text-[#124E66]" />
                 Termín dokončení (Deadline)
               </label>
               <input
                 type="date"
                 value={deadline}
                 onChange={(e) => setDeadline(e.target.value)}
-                className="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-3 py-2 bg-[#212A31] border border-[#748D92]/30 rounded-lg text-[#D3D9D4] text-xs focus:outline-none focus:border-[#124E66]"
               />
             </div>
           </div>
 
           {/* Popis */}
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5 flex items-center gap-1.5">
-              <AlignLeft className="w-3.5 h-3.5 text-slate-400" />
+            <label className="block text-xs font-bold uppercase tracking-wider text-[#748D92] mb-1.5 flex items-center gap-1.5">
+              <AlignLeft className="w-3.5 h-3.5 text-[#124E66]" />
               Podrobnější popis
             </label>
             <textarea
@@ -306,20 +308,20 @@ export function TaskModal({
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Doplňující detaily k úkolu..."
-              className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm transition"
+              className="w-full px-3.5 py-2.5 bg-[#212A31] border border-[#748D92]/40 rounded-xl text-[#D3D9D4] placeholder-[#748D92]/50 focus:outline-none focus:border-[#124E66] text-sm transition resize-none"
             />
           </div>
 
           {/* Podúkoly */}
-          <div className="border-t border-slate-200/80 pt-5">
+          <div className="border-t border-[#748D92]/20 pt-5">
             <div className="flex items-center justify-between mb-3">
               <div>
-                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-[#748D92]">
                   Podúkoly ({completedCount}/{subtasks.length})
                 </h4>
               </div>
               {subtasks.length > 0 && (
-                <span className="text-xs font-semibold text-indigo-600">
+                <span className="text-xs font-semibold text-[#D3D9D4]">
                   {progressPct}% dokončeno
                 </span>
               )}
@@ -327,9 +329,9 @@ export function TaskModal({
 
             {/* Progress bar */}
             {subtasks.length > 0 && (
-              <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden mb-4">
+              <div className="w-full h-1.5 bg-[#212A31] rounded-full overflow-hidden mb-4">
                 <div
-                  className="h-full bg-indigo-600 rounded-full transition-all duration-300"
+                  className="h-full bg-[#124E66] rounded-full transition-all duration-300"
                   style={{ width: `${progressPct}%` }}
                 />
               </div>
@@ -340,18 +342,18 @@ export function TaskModal({
               {subtasks.map((sub) => (
                 <div
                   key={sub.id}
-                  className="flex items-center justify-between p-2.5 rounded-lg bg-slate-50 hover:bg-slate-100/80 border border-slate-200/60 transition group"
+                  className="flex items-center justify-between p-2.5 rounded-lg bg-[#212A31] border border-[#748D92]/20 transition group"
                 >
                   <label className="flex items-center gap-3 flex-1 cursor-pointer select-none">
                     <input
                       type="checkbox"
                       checked={sub.isCompleted}
                       onChange={() => toggleSubtask(sub.id)}
-                      className="w-4 h-4 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500"
+                      className="w-4 h-4 text-[#124E66] rounded border-[#748D92]/30 focus:ring-[#124E66]"
                     />
                     <span
-                      className={`text-sm ${
-                        sub.isCompleted ? 'line-through text-slate-400' : 'text-slate-700'
+                      className={`text-xs ${
+                        sub.isCompleted ? 'line-through text-[#748D92]' : 'text-[#D3D9D4]'
                       }`}
                     >
                       {sub.title}
@@ -360,9 +362,9 @@ export function TaskModal({
                   <button
                     type="button"
                     onClick={() => removeSubtask(sub.id)}
-                    className="text-slate-300 hover:text-rose-500 p-1 rounded transition opacity-0 group-hover:opacity-100"
+                    className="text-[#748D92] hover:text-rose-400 p-1 rounded transition opacity-0 group-hover:opacity-100"
                   >
-                    <Trash2 className="w-4 h-4" />
+                    <Trash2 className="w-3.5 h-3.5" />
                   </button>
                 </div>
               ))}
@@ -381,28 +383,28 @@ export function TaskModal({
                   }
                 }}
                 placeholder="Přidat podúkol a stisknout Enter..."
-                className="flex-1 px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-slate-900 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="flex-1 px-3 py-2 bg-[#212A31] border border-[#748D92]/30 rounded-lg text-[#D3D9D4] text-xs placeholder-[#748D92]/50 focus:outline-none focus:border-[#124E66]"
               />
               <button
                 type="button"
                 onClick={handleAddSubtask}
-                className="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm font-semibold flex items-center gap-1 transition cursor-pointer"
+                className="px-3 py-2 bg-[#124E66] hover:bg-[#124E66]/80 text-[#D3D9D4] rounded-lg text-xs font-semibold flex items-center gap-1 transition cursor-pointer border border-[#748D92]/30"
               >
-                <Plus className="w-4 h-4" />
+                <Plus className="w-3.5 h-3.5" />
                 Přidat
               </button>
             </div>
           </div>
 
           {/* Footer actions */}
-          <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
+          <div className="pt-4 border-t border-[#748D92]/20 flex items-center justify-between">
             {isEditing ? (
               <button
                 type="button"
                 onClick={handleDelete}
-                className="text-rose-600 hover:text-rose-700 hover:bg-rose-50 px-3 py-2 rounded-xl text-sm font-semibold flex items-center gap-1.5 transition"
+                className="text-rose-400 hover:text-rose-300 hover:bg-[#212A31] px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition"
               >
-                <Trash2 className="w-4 h-4" />
+                <Trash2 className="w-3.5 h-3.5" />
                 Smazat úkol
               </button>
             ) : (
@@ -413,14 +415,14 @@ export function TaskModal({
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-medium text-sm transition"
+                className="px-4 py-2 rounded-xl text-[#748D92] hover:text-[#D3D9D4] hover:bg-[#212A31] font-medium text-xs transition"
               >
                 Zrušit
               </button>
               <button
                 type="submit"
                 disabled={loading || !title.trim()}
-                className="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-sm shadow-md shadow-indigo-200 transition disabled:opacity-50 cursor-pointer"
+                className="px-5 py-2.5 rounded-xl bg-[#124E66] hover:bg-[#124E66]/80 text-[#D3D9D4] font-semibold text-xs shadow-md transition disabled:opacity-50 cursor-pointer border border-[#748D92]/30"
               >
                 {loading ? 'Ukládám...' : isEditing ? 'Uložit změny' : 'Vytvořit úkol'}
               </button>

@@ -43,18 +43,18 @@ export function SectionModal({ isOpen, onClose, projectId, sections }: Props) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs">
-      <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-slate-100 overflow-hidden animate-in fade-in zoom-in-95 duration-150">
-        <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
-          <div className="flex items-center gap-2.5 font-bold text-slate-900">
-            <div className="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+      <div className="bg-[#2E3944] rounded-2xl max-w-md w-full shadow-2xl border border-[#748D92]/40 overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+        <div className="px-6 py-4 border-b border-[#748D92]/20 flex items-center justify-between bg-[#212A31]/50">
+          <div className="flex items-center gap-2.5 font-bold text-[#D3D9D4]">
+            <div className="w-8 h-8 rounded-lg bg-[#124E66] text-[#D3D9D4] flex items-center justify-center border border-[#748D92]/30">
               <Layers className="w-4 h-4" />
             </div>
-            <span>Správa tematických sekcí</span>
+            <span>Správa sekcí</span>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition"
+            className="p-1.5 text-[#748D92] hover:text-[#D3D9D4] hover:bg-[#212A31] rounded-lg transition"
           >
             <X className="w-5 h-5" />
           </button>
@@ -67,13 +67,13 @@ export function SectionModal({ isOpen, onClose, projectId, sections }: Props) {
               required
               value={newTitle}
               onChange={(e) => setNewTitle(e.target.value)}
-              placeholder="Nová sekce (např. Marketing, IT, Finance)..."
-              className="flex-1 px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm transition"
+              placeholder="Nová sekce (Marketing, IT, Finance)..."
+              className="flex-1 px-3.5 py-2.5 bg-[#212A31] border border-[#748D92]/40 rounded-xl text-xs text-[#D3D9D4] placeholder-[#748D92]/50 focus:outline-none focus:border-[#124E66] transition"
             />
             <button
               type="submit"
               disabled={loading || !newTitle.trim()}
-              className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-semibold flex items-center gap-1.5 transition disabled:opacity-50 cursor-pointer"
+              className="px-4 py-2.5 bg-[#124E66] hover:bg-[#124E66]/80 text-[#D3D9D4] rounded-xl text-xs font-semibold flex items-center gap-1.5 transition disabled:opacity-50 cursor-pointer border border-[#748D92]/30"
             >
               <Plus className="w-4 h-4" />
               Přidat
@@ -81,39 +81,45 @@ export function SectionModal({ isOpen, onClose, projectId, sections }: Props) {
           </form>
 
           <div>
-            <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">
-              Existující sekce projektu ({sections.length})
+            <h4 className="text-xs font-semibold text-[#748D92] uppercase tracking-wider mb-3">
+              Existující sekce ({sections.length})
             </h4>
-            <div className="divide-y divide-slate-100 border border-slate-200 rounded-xl overflow-hidden max-h-56 overflow-y-auto">
-              {sections.length === 0 ? (
-                <div className="p-4 text-center text-sm text-slate-400">
-                  Zatím žádné sekce. Přidejte první výše.
-                </div>
-              ) : (
-                sections.map((sec) => (
-                  <div key={sec.id} className="p-3 flex items-center justify-between bg-white hover:bg-slate-50 transition">
-                    <span className="text-sm font-medium text-slate-800">{sec.title}</span>
+
+            {sections.length === 0 ? (
+              <p className="text-xs text-[#748D92] italic">
+                Zatím jste nevytvořili žádnou sekci. Sekce slouží k rozdělení úkolů podle týmu či tématu.
+              </p>
+            ) : (
+              <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
+                {sections.map((s) => (
+                  <div
+                    key={s.id}
+                    className="flex items-center justify-between p-3 rounded-xl bg-[#212A31] border border-[#748D92]/20"
+                  >
+                    <span className="text-xs font-semibold text-[#D3D9D4]">
+                      {s.title}
+                    </span>
                     <button
-                      onClick={() => handleDelete(sec.id)}
-                      className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition"
+                      onClick={() => handleDelete(s.id)}
+                      className="p-1 text-[#748D92] hover:text-rose-400 rounded-lg transition"
                       title="Smazat sekci"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
-                ))
-              )}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
-        </div>
 
-        <div className="px-6 py-3 bg-slate-50 border-t border-slate-100 flex justify-end">
-          <button
-            onClick={onClose}
-            className="px-4 py-2 bg-white border border-slate-300 rounded-xl text-slate-700 font-medium text-sm hover:bg-slate-50 transition"
-          >
-            Hotovo
-          </button>
+          <div className="pt-2 border-t border-[#748D92]/20 flex justify-end">
+            <button
+              onClick={onClose}
+              className="px-5 py-2 bg-[#212A31] hover:bg-[#212A31]/80 text-[#D3D9D4] rounded-xl text-xs font-semibold border border-[#748D92]/30 transition"
+            >
+              Hotovo
+            </button>
+          </div>
         </div>
       </div>
     </div>

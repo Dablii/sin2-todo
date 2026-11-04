@@ -15,7 +15,7 @@ import {
   arrayUnion
 } from 'firebase/firestore';
 import { db } from './firebase';
-import { Project, Section, Task, UserProfile, TaskStatus } from '@/types';
+import { Project, Section, Task, UserProfile, TaskStatus, ChristmasRecipient, GiftIdea, WishlistItem, Priority } from '@/types';
 
 // ================= USERS =================
 export async function saveUserProfile(user: { uid: string; email: string | null; displayName: string | null }): Promise<void> {
@@ -254,3 +254,169 @@ export async function seedDemoProject(userId: string, userName: string): Promise
 
   return projectId;
 }
+
+// ================= CHRISTMAS MODULE =================
+
+export function subscribeChristmasRecipients(userId: string, callback: (recipients: ChristmasRecipient[]) => void) {
+  const q = query(
+    collection(db, 'christmas_recipients'),
+    where('userId', '==', userId)
+  );
+
+  return onSnapshot(q, (snapshot) => {
+    const list = snapshot.docs.map(d => {
+      const data = d.data();
+      return {
+        id: d.id,
+        gifts: data.gifts || [],
+        ...data
+      } as unknown as ChristmasRecipient;
+    });
+    list.sort((a, b) => b.createdAt - a.createdAt);
+    callback(list);
+  }, (err) => {
+    console.error('Error subscribing to christmas recipients:', err);
+  });
+}
+
+export async function addChristmasRecipient(
+  userId: string,
+  data: { name: string; relationship?: string; budgetLimit?: number }
+): Promise<string> {
+  const now = Date.now();
+  const docRef = await addDoc(collection(db, 'christmas_recipients'), {
+    userId,
+    name: data.name.trim(),
+    relationship: data.relationship?.trim() || '',
+    budgetLimit: data.budgetLimit || 0,
+    gifts: [],
+    createdAt: now,
+    updatedAt: now
+  });
+  return docRef.id;
+}
+
+export async function updateChristmasRecipient(
+  recipientId: string,
+  data: Partial<Omit<ChristmasRecipient, 'id' | 'userId' | 'createdAt'>>
+): Promise<void> {
+  await updateDoc(doc(db, 'christmas_recipients', recipientId), {
+    ...data,
+    updatedAt: Date.now()
+  });
+}
+
+export async function deleteChristmasRecipient(recipientId: string): Promise<void> {
+  await deleteDoc(doc(db, 'christmas_recipients', recipientId));
+}
+
+export async function addGiftToRecipient(
+  recipientId: string,
+  gift: Omit<GiftIdea, 'id' | 'createdAt'>
+): Promise<void> {
+  const recipientRef = doc(db, 'christmas_recipients', recipientId);
+  const snap = await getDoc(recipientRef);
+  if (!snap.exists()) return;
+
+  const currentGifts: GiftIdea[] = snap.data().gifts || [];
+  const newGift: GiftIdea = {
+    id: `gift-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
+    title: gift.title.trim(),
+    price: gift.price || 0,
+    url: gift.url?.trim() || '',
+    note: gift.note?.trim() || '',
+    status: gift.status || 'IDEA',
+    createdAt: Date.now()
+  };
+
+  await updateDoc(recipientRef, {
+    gifts: [...currentGifts, newGift],
+    updatedAt: Date.now()
+  });
+}
+
+export async function updateGiftInRecipient(
+  recipientId: string,
+  giftId: string,
+  updates: Partial<GiftIdea>
+): Promise<void> {
+  const recipientRef = doc(db, 'christmas_recipients', recipientId);
+  const snap = await getDoc(recipientRef);
+  if (!snap.exists()) return;
+
+  const currentGifts: GiftIdea[] = snap.data().gifts || [];
+  const updatedGifts = currentGifts.map(g => (g.id === giftId ? { ...g, ...updates } : g));
+
+  await updateDoc(recipientRef, {
+    gifts: updatedGifts,
+    updatedAt: Date.now()
+  });
+}
+
+export async function deleteGiftFromRecipient(
+  recipientId: string,
+  giftId: string
+): Promise<void> {
+  const recipientRef = doc(db, 'christmas_recipients', recipientId);
+  const snap = await getDoc(recipientRef);
+  if (!snap.exists()) return;
+
+  const currentGifts: GiftIdea[] = snap.data().gifts || [];
+  const updatedGifts = currentGifts.filter(g => g.id !== giftId);
+
+  await updateDoc(recipientRef, {
+    gifts: updatedGifts,
+    updatedAt: Date.now()
+  });
+}
+
+// ================= WISHLIST =================
+
+export function subscribeWishlist(userId: string, callback: (items: WishlistItem[]) => void) {
+  const q = query(
+    collection(db, 'christmas_wishlist'),
+    where('userId', '==', userId)
+  );
+
+  return onSnapshot(q, (snapshot) => {
+    const list = snapshot.docs.map(d => ({
+      id: d.id,
+      ...d.data()
+    } as WishlistItem));
+    list.sort((a, b) => b.createdAt - a.createdAt);
+    callback(list);
+  }, (err) => {
+    console.error('Error subscribing to wishlist:', err);
+  });
+}
+
+export async function addWishlistItem(
+  userId: string,
+  data: { title: string; url?: string; estimatedPrice?: number; note?: string; priority: Priority }
+): Promise<string> {
+  const docRef = await addDoc(collection(db, 'christmas_wishlist'), {
+    userId,
+    title: data.title.trim(),
+    url: data.url?.trim() || '',
+    estimatedPrice: data.estimatedPrice || 0,
+    note: data.note?.trim() || '',
+    priority: data.priority || 'MEDIUM',
+    isCompleted: false,
+    createdAt: Date.now()
+  });
+  return docRef.id;
+}
+
+export async function updateWishlistItem(
+  itemId: string,
+  data: Partial<Omit<WishlistItem, 'id' | 'userId' | 'createdAt'>>
+): Promise<void> {
+  await updateDoc(doc(db, 'christmas_wishlist', itemId), {
+    ...data
+  });
+}
+
+export async function deleteWishlistItem(itemId: string): Promise<void> {
+  await deleteDoc(doc(db, 'christmas_wishlist', itemId));
+}
+

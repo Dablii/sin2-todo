@@ -48,3 +48,39 @@ export interface Task {
   createdAt: number;
   updatedAt: number;
 }
+
+// Vánoční modul typy
+export type GiftStatus = 'IDEA' | 'PURCHASED' | 'WRAPPED' | 'DELIVERED';
+
+export interface GiftIdea {
+  id: string;
+  title: string;
+  price?: number;
+  url?: string;
+  note?: string;
+  status: GiftStatus;
+  createdAt: number;
+}
+
+export interface ChristmasRecipient {
+  id: string;
+  userId: string;
+  name: string;
+  relationship?: string;
+  budgetLimit?: number;
+  gifts: GiftIdea[];
+  createdAt: number;
+  updatedAt: number;
+}
+
+export interface WishlistItem {
+  id: string;
+  userId: string;
+  title: string;
+  url?: string;
+  estimatedPrice?: number;
+  note?: string;
+  priority: Priority;
+  isCompleted?: boolean;
+  createdAt: number;
+}

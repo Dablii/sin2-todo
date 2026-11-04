@@ -68,15 +68,15 @@ export function TimelineView({ tasks, sections, members, onOpenTaskModal }: Prop
   later.sort(sortByDeadline);
 
   const priorityBadge: Record<Priority, string> = {
-    LOW: 'bg-slate-100 text-slate-600',
-    MEDIUM: 'bg-amber-100 text-amber-800',
-    HIGH: 'bg-rose-100 text-rose-700'
+    LOW: 'bg-[#212A31] text-[#748D92] border border-[#748D92]/20',
+    MEDIUM: 'bg-[#124E66]/40 text-amber-300 border border-[#124E66]',
+    HIGH: 'bg-rose-950/60 text-rose-300 border border-rose-800'
   };
 
   const statusIcons: Record<TaskStatus, React.ReactNode> = {
-    TODO: <Circle className="w-4 h-4 text-slate-400" />,
-    IN_PROGRESS: <Clock3 className="w-4 h-4 text-indigo-500" />,
-    DONE: <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+    TODO: <Circle className="w-4 h-4 text-[#748D92]" />,
+    IN_PROGRESS: <Clock3 className="w-4 h-4 text-sky-400" />,
+    DONE: <CheckCircle2 className="w-4 h-4 text-emerald-400" />
   };
 
   const renderTaskRow = (task: Task, isOverdueAlert: boolean = false) => {
@@ -88,10 +88,10 @@ export function TimelineView({ tasks, sections, members, onOpenTaskModal }: Prop
       <div
         key={task.id}
         onClick={() => onOpenTaskModal(task)}
-        className={`flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-xl border transition cursor-pointer hover:shadow-xs group ${
+        className={`flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-xl border transition cursor-pointer hover:shadow-md group ${
           isOverdueAlert
-            ? 'bg-rose-50/60 border-rose-200 hover:border-rose-400'
-            : 'bg-white border-slate-200 hover:border-indigo-300'
+            ? 'bg-rose-950/30 border-rose-800/60 hover:border-rose-600'
+            : 'bg-[#2E3944] border-[#748D92]/30 hover:border-[#748D92]/80'
         }`}
       >
         <div className="flex items-start sm:items-center gap-3.5 flex-1 min-w-0">
@@ -103,7 +103,7 @@ export function TimelineView({ tasks, sections, members, onOpenTaskModal }: Prop
               updateTaskStatus(task.id, nextStatus);
             }}
             title={task.status === 'DONE' ? 'Označit jako nedokončené' : 'Označit jako hotové'}
-            className="p-1 hover:bg-slate-100 rounded-lg transition shrink-0 mt-0.5 sm:mt-0"
+            className="p-1 hover:bg-[#212A31] rounded-lg transition shrink-0 mt-0.5 sm:mt-0"
           >
             {statusIcons[task.status]}
           </button>
@@ -111,22 +111,22 @@ export function TimelineView({ tasks, sections, members, onOpenTaskModal }: Prop
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2 flex-wrap">
               <span
-                className={`text-sm font-semibold group-hover:text-indigo-600 transition truncate ${
-                  task.status === 'DONE' ? 'line-through text-slate-400' : 'text-slate-900'
+                className={`text-sm font-semibold group-hover:text-white transition truncate ${
+                  task.status === 'DONE' ? 'line-through text-[#748D92]' : 'text-[#D3D9D4]'
                 }`}
               >
                 {task.title}
               </span>
 
               {sec && (
-                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 border border-slate-200">
+                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#124E66]/40 text-[#D3D9D4] border border-[#124E66]">
                   {sec.title}
                 </span>
               )}
             </div>
 
             {task.description && (
-              <p className="text-xs text-slate-500 mt-0.5 truncate max-w-xl">
+              <p className="text-xs text-[#748D92] mt-0.5 truncate max-w-xl">
                 {task.description}
               </p>
             )}
@@ -136,7 +136,7 @@ export function TimelineView({ tasks, sections, members, onOpenTaskModal }: Prop
         {/* Right side info: Subtasks, Assignee, Priority, Deadline */}
         <div className="flex items-center gap-3 mt-3 sm:mt-0 shrink-0 self-end sm:self-center">
           {totalSubs > 0 && (
-            <span className="flex items-center gap-1 text-xs text-slate-500 font-medium">
+            <span className="flex items-center gap-1 text-xs text-[#748D92] font-medium">
               <CheckSquare className="w-3.5 h-3.5" />
               <span>
                 {completedSubs}/{totalSubs}
@@ -154,7 +154,7 @@ export function TimelineView({ tasks, sections, members, onOpenTaskModal }: Prop
 
           {task.assigneeName && (
             <div
-              className="w-6 h-6 rounded-full bg-indigo-600 text-white font-bold text-[10px] flex items-center justify-center shadow-xs"
+              className="w-6 h-6 rounded-full bg-[#124E66] text-[#D3D9D4] font-bold text-[10px] flex items-center justify-center border border-[#748D92]/30"
               title={`Přiřazeno: ${task.assigneeName}`}
             >
               {task.assigneeName.slice(0, 2).toUpperCase()}
@@ -162,10 +162,10 @@ export function TimelineView({ tasks, sections, members, onOpenTaskModal }: Prop
           )}
 
           <div
-            className={`flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-lg ${
+            className={`flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-lg border ${
               isOverdueAlert
-                ? 'bg-rose-100 text-rose-800 font-bold'
-                : 'bg-slate-100 text-slate-700'
+                ? 'bg-rose-950/60 text-rose-300 border-rose-800'
+                : 'bg-[#212A31] text-[#D3D9D4] border-[#748D92]/30'
             }`}
           >
             <Clock className="w-3.5 h-3.5" />
@@ -178,80 +178,73 @@ export function TimelineView({ tasks, sections, members, onOpenTaskModal }: Prop
 
   return (
     <div className="space-y-8">
-      {/* 🔴 Po termínu (Overdue) */}
+      {/* Overdue Section */}
       {overdue.length > 0 && (
-        <section className="bg-rose-50/30 border border-rose-200 rounded-2xl p-5">
-          <div className="flex items-center gap-2 mb-3.5 text-rose-700 font-bold text-sm">
-            <AlertTriangle className="w-4 h-4 text-rose-600 animate-pulse" />
+        <div className="space-y-3">
+          <div className="flex items-center gap-2 text-rose-400 font-bold text-sm">
+            <AlertTriangle className="w-4 h-4" />
             <span>Po termínu ({overdue.length})</span>
-            <span className="text-xs font-normal text-rose-500">
-              — Tyto úkoly již překročily svůj deadline a vyžadují pozornost!
-            </span>
           </div>
-          <div className="space-y-2.5">
+          <div className="space-y-2">
             {overdue.map((t) => renderTaskRow(t, true))}
           </div>
-        </section>
+        </div>
       )}
 
-      {/* 🟡 Dnes a zítra */}
-      <section className="space-y-3">
-        <div className="flex items-center gap-2 text-slate-800 font-bold text-sm">
-          <div className="w-2.5 h-2.5 rounded-full bg-amber-500" />
+      {/* Today / Tomorrow Section */}
+      <div className="space-y-3">
+        <div className="flex items-center gap-2 text-[#D3D9D4] font-bold text-sm">
+          <Calendar className="w-4 h-4 text-[#124E66]" />
           <span>Dnes a zítra ({todayTomorrow.length})</span>
         </div>
         {todayTomorrow.length === 0 ? (
-          <div className="p-4 rounded-xl border border-dashed border-slate-200 text-xs text-slate-400 text-center">
-            Žádné úkoly s termínem dnes ani zítra.
-          </div>
+          <p className="text-xs text-[#748D92] italic pl-6">
+            Žádné úkoly s termínem na dnes ani zítra.
+          </p>
         ) : (
           <div className="space-y-2">
-            {todayTomorrow.map((t) => renderTaskRow(t, false))}
+            {todayTomorrow.map((t) => renderTaskRow(t))}
           </div>
         )}
-      </section>
+      </div>
 
-      {/* 🔵 Tento týden */}
-      <section className="space-y-3">
-        <div className="flex items-center gap-2 text-slate-800 font-bold text-sm">
-          <div className="w-2.5 h-2.5 rounded-full bg-indigo-500" />
-          <span>Nadcházející tento týden ({thisWeek.length})</span>
+      {/* Next 7 Days */}
+      <div className="space-y-3">
+        <div className="flex items-center gap-2 text-[#D3D9D4] font-bold text-sm">
+          <Calendar className="w-4 h-4 text-[#124E66]" />
+          <span>V následujících 7 dnech ({thisWeek.length})</span>
         </div>
         {thisWeek.length === 0 ? (
-          <div className="p-4 rounded-xl border border-dashed border-slate-200 text-xs text-slate-400 text-center">
-            Žádné další úkoly s termínem v následujících 7 dnech.
-          </div>
+          <p className="text-xs text-[#748D92] italic pl-6">
+            Žádné naplánované úkoly v příštím týdnu.
+          </p>
         ) : (
-          <div className="space-y-2">
-            {thisWeek.map((t) => renderTaskRow(t, false))}
-          </div>
+          <div className="space-y-2">{thisWeek.map((t) => renderTaskRow(t))}</div>
         )}
-      </section>
+      </div>
 
-      {/* 🟣 Později */}
+      {/* Later */}
       {later.length > 0 && (
-        <section className="space-y-3">
-          <div className="flex items-center gap-2 text-slate-800 font-bold text-sm">
-            <div className="w-2.5 h-2.5 rounded-full bg-purple-500" />
+        <div className="space-y-3">
+          <div className="flex items-center gap-2 text-[#748D92] font-bold text-sm">
+            <Calendar className="w-4 h-4" />
             <span>Později / Dokončené ({later.length})</span>
           </div>
-          <div className="space-y-2">
-            {later.map((t) => renderTaskRow(t, false))}
-          </div>
-        </section>
+          <div className="space-y-2">{later.map((t) => renderTaskRow(t))}</div>
+        </div>
       )}
 
-      {/* ⚪ Bez termínu */}
+      {/* No Deadline */}
       {noDeadline.length > 0 && (
-        <section className="space-y-3">
-          <div className="flex items-center gap-2 text-slate-800 font-bold text-sm">
-            <div className="w-2.5 h-2.5 rounded-full bg-slate-300" />
-            <span>Bez termínu ({noDeadline.length})</span>
+        <div className="space-y-3">
+          <div className="flex items-center gap-2 text-[#748D92] font-bold text-sm">
+            <Clock className="w-4 h-4" />
+            <span>Bez stanoveného termínu ({noDeadline.length})</span>
           </div>
           <div className="space-y-2">
-            {noDeadline.map((t) => renderTaskRow(t, false))}
+            {noDeadline.map((t) => renderTaskRow(t))}
           </div>
-        </section>
+        </div>
       )}
     </div>
   );
