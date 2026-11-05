@@ -84,3 +84,25 @@ export interface WishlistItem {
   isCompleted?: boolean;
   createdAt: number;
 }
+
+// Plánovač a Rozvrh (Study Plan & Calendar)
+export type EventCategory = 'STUDY' | 'EXAM' | 'SPORT' | 'LEISURE' | 'PERSONAL';
+export type RecurrenceFrequency = 'NONE' | 'WEEKLY' | 'DAILY';
+
+export interface ScheduleEvent {
+  id: string;
+  userId: string;
+  title: string;
+  description?: string;
+  category: EventCategory;
+  startTime: string; // HH:mm např. "14:00"
+  endTime: string;   // HH:mm např. "15:30"
+  date?: string;     // YYYY-MM-DD (pro jednorázové události a zkoušky)
+  recurrence: RecurrenceFrequency; // NONE | WEEKLY | DAILY
+  daysOfWeek?: number[]; // 1 = Po, 2 = Út, 3 = St, 4 = Čt, 5 = Pá, 6 = So, 7 = Ne
+  color?: string;
+  isCompleted?: boolean;
+  createdAt: number;
+  updatedAt: number;
+}
+

@@ -15,7 +15,7 @@ import {
   arrayUnion
 } from 'firebase/firestore';
 import { db } from './firebase';
-import { Project, Section, Task, UserProfile, TaskStatus, ChristmasRecipient, GiftIdea, WishlistItem, Priority } from '@/types';
+import { Project, Section, Task, UserProfile, TaskStatus, ChristmasRecipient, GiftIdea, WishlistItem, Priority, ScheduleEvent } from '@/types';
 
 // ================= USERS =================
 export async function saveUserProfile(user: { uid: string; email: string | null; displayName: string | null }): Promise<void> {
@@ -419,4 +419,58 @@ export async function updateWishlistItem(
 export async function deleteWishlistItem(itemId: string): Promise<void> {
   await deleteDoc(doc(db, 'christmas_wishlist', itemId));
 }
+
+// ================= SCHEDULE & STUDY PLANNER =================
+export function subscribeScheduleEvents(userId: string, callback: (events: ScheduleEvent[]) => void) {
+  const q = query(
+    collection(db, 'schedule_events'),
+    where('userId', '==', userId)
+  );
+
+  return onSnapshot(q, (snapshot) => {
+    const list = snapshot.docs.map(d => ({ id: d.id, ...d.data() } as ScheduleEvent));
+    // Sort by startTime
+    list.sort((a, b) => a.startTime.localeCompare(b.startTime));
+    callback(list);
+  }, (err) => {
+    console.error('Error subscribing to schedule events:', err);
+  });
+}
+
+export async function createScheduleEvent(data: Omit<ScheduleEvent, 'id' | 'createdAt' | 'updatedAt'>): Promise<string> {
+  const docRef = await addDoc(collection(db, 'schedule_events'), {
+    ...data,
+    isCompleted: data.isCompleted ?? false,
+    createdAt: Date.now(),
+    updatedAt: Date.now()
+  });
+  return docRef.id;
+}
+
+export async function createMultipleScheduleEvents(events: Array<Omit<ScheduleEvent, 'id' | 'createdAt' | 'updatedAt'>>): Promise<void> {
+  const promises = events.map(event =>
+    addDoc(collection(db, 'schedule_events'), {
+      ...event,
+      isCompleted: event.isCompleted ?? false,
+      createdAt: Date.now(),
+      updatedAt: Date.now()
+    })
+  );
+  await Promise.all(promises);
+}
+
+export async function updateScheduleEvent(
+  eventId: string,
+  data: Partial<Omit<ScheduleEvent, 'id' | 'userId' | 'createdAt'>>
+): Promise<void> {
+  await updateDoc(doc(db, 'schedule_events', eventId), {
+    ...data,
+    updatedAt: Date.now()
+  });
+}
+
+export async function deleteScheduleEvent(eventId: string): Promise<void> {
+  await deleteDoc(doc(db, 'schedule_events', eventId));
+}
+
 

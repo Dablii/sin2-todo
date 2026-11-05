@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import { CheckSquare, LogOut, User as UserIcon, FolderKanban, Gift } from 'lucide-react';
+import { CheckSquare, LogOut, User as UserIcon, FolderKanban, Gift, CalendarDays } from 'lucide-react';
 
 export function Navbar() {
   const { user, logout } = useAuth();
@@ -12,6 +12,7 @@ export function Navbar() {
 
   const isProjectsActive = pathname === '/' || pathname.startsWith('/projects');
   const isChristmasActive = pathname === '/christmas';
+  const isPlannerActive = pathname === '/planner';
 
   return (
     <header className="sticky top-0 z-30 bg-[#212A31]/90 backdrop-blur border-b border-[#2E3944]">
@@ -34,6 +35,18 @@ export function Navbar() {
             >
               <FolderKanban className="w-4 h-4 text-[#124E66]" />
               <span>Projekty</span>
+            </Link>
+
+            <Link
+              href="/planner"
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition ${
+                isPlannerActive
+                  ? 'bg-[#124E66] text-white border border-[#748D92]/40 shadow'
+                  : 'text-[#748D92] hover:text-[#D3D9D4] hover:bg-[#2E3944]/50'
+              }`}
+            >
+              <CalendarDays className="w-4 h-4 text-emerald-400" />
+              <span>Rozvrh & Plán</span>
             </Link>
 
             <Link
