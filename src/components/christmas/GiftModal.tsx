@@ -110,10 +110,10 @@ export function GiftModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-[#2E3944] w-full max-w-lg rounded-2xl border border-[#748D92]/40 shadow-2xl overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/70 backdrop-blur-sm animate-in fade-in duration-200 overflow-y-auto">
+      <div className="bg-[#2E3944] w-full max-w-lg max-h-[92vh] sm:max-h-[90vh] flex flex-col rounded-t-3xl sm:rounded-2xl border border-[#748D92]/40 shadow-2xl overflow-hidden">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-[#748D92]/20 flex items-center justify-between bg-[#212A31]/50">
+        <div className="px-6 py-4 border-b border-[#748D92]/20 flex items-center justify-between bg-[#212A31]/50 shrink-0">
           <div>
             <h2 className="text-lg font-bold text-[#D3D9D4]">
               {initialData ? 'Upravit dárek' : 'Přidat nový dárek'}
@@ -131,7 +131,7 @@ export function GiftModal({
         </div>
 
         {/* Form Body */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="p-6 space-y-4 overflow-y-auto flex-1">
           {/* Smart URL Import */}
           <div>
             <label className="block text-xs font-semibold text-[#748D92] uppercase tracking-wider mb-1.5">

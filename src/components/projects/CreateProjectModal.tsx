@@ -44,8 +44,8 @@ export function CreateProjectModal({ isOpen, onClose, userId, onCreated }: Props
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-      <div className="bg-[#2E3944] rounded-2xl max-w-md w-full shadow-2xl border border-[#748D92]/40 overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/70 backdrop-blur-sm">
+      <div className="bg-[#2E3944] rounded-t-3xl sm:rounded-2xl max-w-md w-full shadow-2xl border border-[#748D92]/40 overflow-hidden animate-in fade-in zoom-in-95 duration-150">
         <div className="px-6 py-4 border-b border-[#748D92]/20 flex items-center justify-between bg-[#212A31]/50">
           <div className="flex items-center gap-2.5 font-bold text-[#D3D9D4]">
             <div className="w-8 h-8 rounded-lg bg-[#124E66] text-[#D3D9D4] flex items-center justify-center border border-[#748D92]/30">

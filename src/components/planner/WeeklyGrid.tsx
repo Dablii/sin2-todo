@@ -20,6 +20,11 @@ export function WeeklyGrid({
   onToggleComplete,
   onAddEventForDay
 }: WeeklyGridProps) {
+  // Mobile day tab filter (default to today's day of week or Monday)
+  const todayJsDay = new Date().getDay();
+  const defaultTodayCzechId = todayJsDay === 0 ? 7 : todayJsDay;
+  const [mobileDayTab, setMobileDayTab] = React.useState<number | 'ALL'>(defaultTodayCzechId);
+
   // Filtrování událostí
   const filteredEvents = events.filter(e => {
     if (selectedCategory !== 'ALL' && e.category !== selectedCategory) return false;
@@ -27,8 +32,44 @@ export function WeeklyGrid({
   });
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-7 gap-3">
-      {CZECH_DAYS.map((day) => {
+    <div className="space-y-4">
+      {/* Mobile Day Tabs (Po - Ne + Vše) */}
+      <div className="flex md:hidden items-center gap-1 p-1 bg-[#212A31] rounded-2xl border border-[#2E3944] overflow-x-auto pb-1">
+        <button
+          onClick={() => setMobileDayTab('ALL')}
+          className={`px-3 py-1.5 rounded-xl text-xs font-bold transition shrink-0 ${
+            mobileDayTab === 'ALL'
+              ? 'bg-[#124E66] text-white shadow'
+              : 'text-[#748D92] hover:text-[#D3D9D4]'
+          }`}
+        >
+          Celý týden
+        </button>
+        {CZECH_DAYS.map((d) => {
+          const isSelected = mobileDayTab === d.id;
+          const isToday = d.id === defaultTodayCzechId;
+          return (
+            <button
+              key={d.id}
+              onClick={() => setMobileDayTab(d.id)}
+              className={`px-2.5 py-1.5 rounded-xl text-xs font-bold transition shrink-0 flex items-center gap-1 ${
+                isSelected
+                  ? 'bg-[#124E66] text-white shadow'
+                  : 'text-[#748D92] hover:text-[#D3D9D4] bg-[#2E3944]/40'
+              }`}
+            >
+              <span>{d.short}</span>
+              {isToday && <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />}
+            </button>
+          );
+        })}
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-7 gap-3">
+        {CZECH_DAYS.map((day) => {
+          if (mobileDayTab !== 'ALL' && mobileDayTab !== day.id) {
+            return null;
+          }
         // Získat události pro daný den v týdnu
         const dayEvents = filteredEvents.filter(e => {
           if (e.recurrence === 'WEEKLY' && e.daysOfWeek) {
@@ -167,6 +208,7 @@ export function WeeklyGrid({
           </div>
         );
       })}
+      </div>
     </div>
   );
 }

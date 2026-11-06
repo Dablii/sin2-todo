@@ -17,6 +17,7 @@ import { LongTermRoadmap } from '@/components/planner/LongTermRoadmap';
 import { EventModal } from '@/components/planner/EventModal';
 import { AiPlannerModal } from '@/components/planner/AiPlannerModal';
 import { CATEGORY_CONFIG } from '@/components/planner/plannerConstants';
+import { Navbar } from '@/components/Navbar';
 import {
   CalendarDays,
   Sparkles,
@@ -130,9 +131,11 @@ export default function PlannerPage() {
   const completedEvents = events.filter(e => e.isCompleted).length;
 
   return (
-    <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-6 animate-fade-in">
-      {/* Horní hlavička stránky */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[#212A31] p-5 sm:p-6 rounded-2xl border border-[#2E3944] shadow-xl">
+    <div className="min-h-screen flex flex-col bg-[#212A31] text-[#D3D9D4]">
+      <Navbar />
+      <main className="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-6 space-y-6 animate-fade-in">
+        {/* Horní hlavička stránky */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[#212A31] p-4 sm:p-6 rounded-2xl border border-[#2E3944] shadow-xl">
         <div>
           <div className="flex items-center gap-2.5">
             <div className="w-10 h-10 rounded-xl bg-[#124E66] text-emerald-300 flex items-center justify-center border border-[#748D92]/30 shadow-md">
@@ -353,6 +356,7 @@ export default function PlannerPage() {
         currentEvents={events}
         onApplyPlan={handleApplyAiPlan}
       />
+      </main>
     </div>
   );
 }

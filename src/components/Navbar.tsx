@@ -24,7 +24,7 @@ export function Navbar() {
             </div>
             <span>TaskFlow</span>
           </Link>
-          <nav className="flex items-center gap-2 text-sm font-medium">
+          <nav className="hidden md:flex items-center gap-2 text-sm font-medium">
             <Link
               href="/"
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition ${
@@ -67,8 +67,8 @@ export function Navbar() {
         </div>
 
         {user && (
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2.5 bg-[#2E3944] px-3 py-1.5 rounded-full border border-[#748D92]/30">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex items-center gap-2.5 bg-[#2E3944] px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full border border-[#748D92]/30">
               <div className="w-7 h-7 rounded-full bg-[#124E66] text-[#D3D9D4] text-xs font-semibold flex items-center justify-center border border-[#748D92]/30">
                 {user.displayName ? user.displayName.slice(0, 2).toUpperCase() : <UserIcon className="w-4 h-4" />}
               </div>
@@ -86,6 +86,48 @@ export function Navbar() {
           </div>
         )}
       </div>
+
+      {/* Mobile Bottom Navigation Bar (App style for smartphones) */}
+      <nav
+        aria-label="Mobilní navigace"
+        className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#212A31]/95 backdrop-blur-md border-t border-[#2E3944] px-4 py-2 flex items-center justify-around shadow-2xl safe-area-pb"
+      >
+        <Link
+          href="/"
+          className={`flex flex-col items-center justify-center gap-1 py-1 px-3 rounded-xl transition ${
+            isProjectsActive ? 'text-white font-bold' : 'text-[#748D92]'
+          }`}
+        >
+          <div className={`p-1 rounded-lg ${isProjectsActive ? 'bg-[#124E66] text-white' : ''}`}>
+            <FolderKanban className="w-5 h-5" />
+          </div>
+          <span className="text-[10px] tracking-tight">Projekty</span>
+        </Link>
+
+        <Link
+          href="/planner"
+          className={`flex flex-col items-center justify-center gap-1 py-1 px-3 rounded-xl transition ${
+            isPlannerActive ? 'text-emerald-400 font-bold' : 'text-[#748D92]'
+          }`}
+        >
+          <div className={`p-1 rounded-lg ${isPlannerActive ? 'bg-emerald-500/20 text-emerald-400' : ''}`}>
+            <CalendarDays className="w-5 h-5" />
+          </div>
+          <span className="text-[10px] tracking-tight">Rozvrh</span>
+        </Link>
+
+        <Link
+          href="/christmas"
+          className={`flex flex-col items-center justify-center gap-1 py-1 px-3 rounded-xl transition ${
+            isChristmasActive ? 'text-rose-400 font-bold' : 'text-[#748D92]'
+          }`}
+        >
+          <div className={`p-1 rounded-lg ${isChristmasActive ? 'bg-rose-500/20 text-rose-400' : ''}`}>
+            <Gift className="w-5 h-5" />
+          </div>
+          <span className="text-[10px] tracking-tight">Vánoce</span>
+        </Link>
+      </nav>
     </header>
   );
 }

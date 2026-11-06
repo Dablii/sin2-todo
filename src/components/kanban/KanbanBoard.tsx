@@ -54,6 +54,7 @@ export function KanbanBoard({
   const [selectedSection, setSelectedSection] = useState<string>('ALL');
   const [selectedAssignee, setSelectedAssignee] = useState<string>('ALL');
   const [dragOverColumn, setDragOverColumn] = useState<TaskStatus | null>(null);
+  const [mobileActiveColumn, setMobileActiveColumn] = useState<TaskStatus | 'ALL'>('ALL');
 
   // Filter tasks
   const filteredTasks = tasks.filter((task) => {
@@ -153,9 +154,44 @@ export function KanbanBoard({
         </div>
       </div>
 
+      {/* Mobile Column Tabs */}
+      <div className="flex md:hidden items-center gap-1.5 p-1 bg-[#2E3944] rounded-xl border border-[#748D92]/30 overflow-x-auto">
+        <button
+          onClick={() => setMobileActiveColumn('ALL')}
+          className={`flex-1 py-1.5 px-2.5 rounded-lg text-xs font-bold transition text-center whitespace-nowrap ${
+            mobileActiveColumn === 'ALL'
+              ? 'bg-[#124E66] text-white shadow'
+              : 'text-[#748D92] hover:text-[#D3D9D4]'
+          }`}
+        >
+          Vše ({filteredTasks.length})
+        </button>
+        {COLUMNS.map((col) => {
+          const count = filteredTasks.filter((t) => t.status === col.id).length;
+          const isActive = mobileActiveColumn === col.id;
+          return (
+            <button
+              key={col.id}
+              onClick={() => setMobileActiveColumn(col.id)}
+              className={`flex-1 py-1.5 px-2.5 rounded-lg text-xs font-bold transition text-center whitespace-nowrap ${
+                isActive
+                  ? 'bg-[#124E66] text-white shadow'
+                  : 'text-[#748D92] hover:text-[#D3D9D4]'
+              }`}
+            >
+              {col.title} ({count})
+            </button>
+          );
+        })}
+      </div>
+
       {/* Kanban columns */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
         {COLUMNS.map((col) => {
+          if (mobileActiveColumn !== 'ALL' && mobileActiveColumn !== col.id) {
+            return null;
+          }
+
           const colTasks = filteredTasks.filter((t) => t.status === col.id);
           const Icon = col.icon;
           const isDropActive = dragOverColumn === col.id;

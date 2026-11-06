@@ -1,0 +1,49 @@
+{
+  "name": "TaskFlow | Projekty, Plánovač a Vánoce",
+  "short_name": "TaskFlow",
+  "description": "Moderní aplikace pro správu úkolů, studijní rozvrh s AI a Vánoční organizér",
+  "start_url": "/",
+  "id": "/",
+  "display": "standalone",
+  "background_color": "#212A31",
+  "theme_color": "#124E66",
+  "orientation": "portrait-primary",
+  "lang": "cs",
+  "categories": ["productivity", "education", "utilities"],
+  "icons": [
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-maskable-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Rozvrh & Plán",
+      "short_name": "Rozvrh",
+      "description": "Otevřít týdenní a studijní rozvrh",
+      "url": "/planner",
+      "icons": [{ "src": "/icon-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Vánoční organizér",
+      "short_name": "Vánoce",
+      "description": "Seznamy dárků a vánoční wishlist",
+      "url": "/christmas",
+      "icons": [{ "src": "/icon-192x192.png", "sizes": "192x192" }]
+    }
+  ]
+}

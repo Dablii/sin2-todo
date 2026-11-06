@@ -78,9 +78,9 @@ export function EventModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in">
-      <div className="bg-[#212A31] border border-[#2E3944] rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl">
-        <div className="px-6 py-4 border-b border-[#2E3944] flex items-center justify-between">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/70 backdrop-blur-sm animate-fade-in overflow-y-auto">
+      <div className="bg-[#212A31] border border-[#2E3944] rounded-t-3xl sm:rounded-2xl w-full max-w-lg max-h-[92vh] sm:max-h-[90vh] flex flex-col overflow-hidden shadow-2xl">
+        <div className="px-6 py-4 border-b border-[#2E3944] flex items-center justify-between shrink-0">
           <h2 className="text-lg font-bold text-[#D3D9D4] flex items-center gap-2">
             <Calendar className="w-5 h-5 text-[#124E66]" />
             <span>{initialEvent ? 'Upravit aktivitu' : 'Nová aktivita / blok rozvrhu'}</span>
@@ -93,7 +93,7 @@ export function EventModal({
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="p-6 space-y-4 overflow-y-auto flex-1">
           {/* Název */}
           <div>
             <label className="block text-xs font-semibold uppercase tracking-wider text-[#748D92] mb-1.5">

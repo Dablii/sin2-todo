@@ -167,10 +167,10 @@ export function TaskModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm overflow-y-auto">
-      <div className="bg-[#2E3944] rounded-2xl max-w-2xl w-full shadow-2xl border border-[#748D92]/40 overflow-hidden my-8 animate-in fade-in zoom-in-95 duration-150">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/70 backdrop-blur-sm overflow-y-auto">
+      <div className="bg-[#2E3944] rounded-t-3xl sm:rounded-2xl max-w-2xl w-full max-h-[92vh] sm:max-h-[90vh] flex flex-col shadow-2xl border border-[#748D92]/40 overflow-hidden my-0 sm:my-8 animate-in fade-in zoom-in-95 duration-150">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-[#748D92]/20 flex items-center justify-between bg-[#212A31]/50">
+        <div className="px-6 py-4 border-b border-[#748D92]/20 flex items-center justify-between bg-[#212A31]/50 shrink-0">
           <div className="flex items-center gap-2">
             <span className="text-xs font-bold uppercase tracking-wider text-[#D3D9D4] bg-[#124E66] px-2.5 py-1 rounded-full border border-[#748D92]/30">
               {isEditing ? 'Detail úkolu' : 'Nový úkol'}
@@ -190,7 +190,7 @@ export function TaskModal({
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-6">
+        <form onSubmit={handleSubmit} className="p-6 space-y-6 overflow-y-auto flex-1">
           {/* Title */}
           <div>
             <label className="block text-xs font-bold uppercase tracking-wider text-[#748D92] mb-1.5">
